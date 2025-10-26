@@ -3,7 +3,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "~/components/ui/breadcrumb";
 import { Separator } from "~/components/ui/separator";
 import { getCharRarity, getCharRarityColor } from "~/lib/char-utils";
-import { fetchEntries } from "~/lib/fetch-utils";
+import { fetchEntries, SUPPORTED_LANGS } from "~/lib/fetch-utils";
 import { getBranchIcon, getCharPortraitThumbnail, getClassIcon } from "~/lib/image-utils";
 
 export const meta: MetaFunction = () => {
@@ -15,8 +15,11 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { lang } = params;
-  const data = await fetchEntries(lang!, "operators");
-  if (!data) throw new Response("", { status: 404 });
+  if (!lang) throw new Response(null, { status: 400 });
+  if (!SUPPORTED_LANGS.includes(lang)) throw new Response(null, { status: 404 });
+
+  const data = await fetchEntries(lang, "operators");
+  if (!data) throw new Response(null, { status: 404 });
   return { lang, data };
 }
 
@@ -25,6 +28,7 @@ function OperatorItem({ lang, char }: { lang: string; char: any }) {
     <Link
       key={char.id}
       to={`/${lang}/operators/${char.slug}`}
+      discover="none"
     >
       <div className="group relative aspect-1/2 bg-muted rounded overflow-hidden hover:opacity-80 transition-opacity">
         <img className="object-contain w-full h-full rounded"
@@ -78,7 +82,7 @@ export default function Page() {
           </Breadcrumb>
           <h1 className="text-2xl font-semibold mb-2">Operators</h1>
           <div className="text-sm mb-4">
-            <span className="text-muted-foreground">Count: </span>
+            <span className="text-muted-foreground">Count:&nbsp;</span>
             {sortedData.length}
           </div>
           <Separator />
