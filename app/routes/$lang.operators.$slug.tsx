@@ -1,22 +1,25 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
+import EntryTitle from "~/components/entry-title";
+import CVTable from "~/components/operators/cv-table";
+import OperatorFile from "~/components/operators/operator-file";
 import OperatorGallery from "~/components/operators/operator-gallery";
+import OverviewTable from "~/components/operators/overview-table";
+import StatsTable from "~/components/operators/stats-table";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "~/components/ui/breadcrumb";
 import { Separator } from "~/components/ui/separator";
 import { getCharClass, getCharRarity } from "~/lib/char-utils";
-import { fetchEntry } from "~/lib/fetch-utils";
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Closure Wiki" },
-    { name: "description", content: "Welcome to Closure's Wiki, Doctor!" },
-  ];
-};
+import { fetchEntry, SUPPORTED_LANGS } from "~/lib/fetch-utils";
+import { getCharAvatar } from "~/lib/image-utils";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { lang, slug } = params;
-  const data = await fetchEntry(lang!, "operators", slug!);
-  if (!data) throw new Response("Not Found", { status: 404 });
+  if (!lang || !slug) throw new Response(null, { status: 400 });
+  if (!SUPPORTED_LANGS.includes(lang)) throw new Response(null, { status: 404 });
+
+  const data = await fetchEntry(lang, "operators", slug);
+  if (!data) throw new Response(null, { status: 404 });
+
   return { lang, data };
 }
 
@@ -27,22 +30,80 @@ export default function Page() {
     <main className="w-full max-w-5xl mx-auto">
       <div className="flex flex-col gap-4 p-4">
         <div>
-          <Breadcrumb className="mb-2">
+          <Breadcrumb className="mb-4">
             <BreadcrumbList>
-              <BreadcrumbItem><BreadcrumbLink href={`/${lang}`}>Home</BreadcrumbLink></BreadcrumbItem>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to={`/${lang}`}>Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
-              <BreadcrumbItem><BreadcrumbLink href={`/${lang}/operators`}>Operators</BreadcrumbLink></BreadcrumbItem>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to={`/${lang}/operators`}>Operators</Link></BreadcrumbLink>
+              </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
-              <BreadcrumbItem><BreadcrumbPage>{data.meta.name}</BreadcrumbPage></BreadcrumbItem>
+              <BreadcrumbItem>
+                <BreadcrumbPage>{data.meta.name}</BreadcrumbPage>
+              </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="text-2xl font-semibold mb-2">{data.meta.name}</h1>
-          <div className="text-sm text-muted-foreground mb-4">{getCharRarity(data.char.rarity)}★ {getCharClass(data.char.profession)} Operator</div>
+          <EntryTitle
+            title={data.meta.name}
+            caption={`${getCharRarity(data.char.rarity)}★ ${getCharClass(data.char.profession)} Operator`}
+            icon={getCharAvatar(`${data.meta.id}`)}
+          />
           <Separator />
         </div>
 
-        <section id="gallery" className="scroll-mt-16">
+        <section id="gallery">
           <OperatorGallery charSkins={data.charSkins} />
+        </section>
+
+        <section id="overview">
+          <h2 className="text-xl font-semibold mb-2">Overview</h2>
+          <Separator className="mb-4" />
+          <OverviewTable character={data.char} />
+          <CVTable charSkins={data.charSkins} voiceLangDict={data.voiceLangDict} />
+        </section>
+        
+        <section id="attributes">
+          <h2 className="text-xl font-semibold mb-2">Attributes</h2>
+          <Separator className="mb-4" />
+          <StatsTable phases={data.char.phases} favorKeyFrames={data.char.favorKeyFrames} />
+        </section>
+
+        {/* <section>
+          <h2 className="text-xl font-semibold mb-2">Talents</h2>
+          <Separator className="mb-4" />
+          <TalentsTable talents={data.char.talents} />
+        </section> */}
+
+        {/* <section>
+          <h2 className="text-xl font-semibold mb-2">Potentials</h2>
+          <Separator className="mb-4" />
+          <PotentialsTable potentialRanks={data.char.potentialRanks} />
+        </section> */}
+
+        {/* <section>
+          <h2 className="text-xl font-semibold mb-2">Skills</h2>
+          <Separator className="mb-4" />
+          <SkillsTable skills={data.char.skills} charSkills={data.charSkills} allSkillLvlup={data.char.allSkillLvlup} items={items} />
+        </section> */}
+
+        <section>
+          <h2 className="text-xl font-semibold mb-2">Base Skills</h2>
+          <Separator className="mb-4" />
+          <div className="text-muted-foreground italic">TBD</div>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-2">Modules</h2>
+          <Separator className="mb-4" />
+          <div className="text-muted-foreground italic">TBD</div>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-2">Operator File</h2>
+          <Separator className="mb-4" />
+          <OperatorFile storyTextAudio={data.charProfile.storyTextAudio} />
         </section>
       </div>
     </main>

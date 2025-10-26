@@ -3,6 +3,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "~/components/ui/breadcrumb";
 import { Separator } from "~/components/ui/separator";
 import { getCharRarity, getCharRarityColor } from "~/lib/char-utils";
+import { fetchEntries } from "~/lib/fetch-utils";
 import { getBranchIcon, getCharPortraitThumbnail, getClassIcon } from "~/lib/image-utils";
 
 export const meta: MetaFunction = () => {
@@ -11,26 +12,6 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "Welcome to Closure's Wiki, Doctor!" },
   ];
 };
-
-const SUPPORTED_LANGS = ["en", "cn", "jp", "kr"];
-const SUPPORTED_TYPES = ["operators"];
-const API_URL = "https://api.closure.wiki";
-
-export async function fetchEntries(lang: string, type: string) {
-  try {
-    if (!SUPPORTED_LANGS.includes(lang)) return null;
-    if (!SUPPORTED_TYPES.includes(type)) return null;
-
-    const response = await fetch(`${API_URL}/${lang}/${type}`);
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching entries:", error);
-    return null;
-  }
-}
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { lang } = params;
@@ -42,8 +23,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 function OperatorItem({ lang, char }: { lang: string; char: any }) {
   return (
     <Link
-    key={char.id}
-    to={`/${lang}/operators/${char.slug}`}
+      key={char.id}
+      to={`/${lang}/operators/${char.slug}`}
     >
       <div className="group relative aspect-1/2 bg-muted rounded overflow-hidden hover:opacity-80 transition-opacity">
         <img className="object-contain w-full h-full rounded"
@@ -84,10 +65,10 @@ export default function Page() {
     <main className="w-full max-w-5xl mx-auto">
       <div className="flex flex-col gap-4 p-4">
         <div>
-          <Breadcrumb className="mb-2">
+          <Breadcrumb className="mb-4">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${lang}`}>Home</BreadcrumbLink>
+                <BreadcrumbLink asChild><Link to={`/${lang}`}>Home</Link></BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
               <BreadcrumbItem>
@@ -97,9 +78,8 @@ export default function Page() {
           </Breadcrumb>
           <h1 className="text-2xl font-semibold mb-2">Operators</h1>
           <div className="text-sm mb-4">
-            <span className="text-muted-foreground">Showing </span>
+            <span className="text-muted-foreground">Count: </span>
             {sortedData.length}
-            <span className="text-muted-foreground"> Operations</span>
           </div>
           <Separator />
         </div>

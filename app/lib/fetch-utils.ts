@@ -1,5 +1,5 @@
-const SUPPORTED_LANGS = ["en", "cn", "jp"];
-const SUPPORTED_TYPES = ["operators", "enemies"];
+export const SUPPORTED_LANGS = ["en", "cn", "jp", "kr"];
+export const SUPPORTED_TYPES = ["operators", "enemies"];
 
 const API_URL = "https://api.closure.wiki";
 const API_VERSION = "v1";
