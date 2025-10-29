@@ -63,7 +63,7 @@ function OperatorItem({ lang, char }: { lang: string; char: any }) {
 
 export default function Page() {
   const { lang, data }: any = useLoaderData<typeof loader>();
-  const sortedData = [...data].sort((a: any, b: any) => getCharRarity(b.rarity) - getCharRarity(a.rarity));
+  const sortedData = [...data].filter(Boolean).reverse().sort((a: any, b: any) => getCharRarity(b.rarity) - getCharRarity(a.rarity));
 
   return (
     <main className="w-full max-w-5xl mx-auto">

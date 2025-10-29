@@ -1,4 +1,6 @@
 export default function StatsTable({ potentialRanks }: { potentialRanks: any[] }) {
+  if (!potentialRanks || potentialRanks.length === 0) return null;
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse bg-muted text-sm">
@@ -13,11 +15,11 @@ export default function StatsTable({ potentialRanks }: { potentialRanks: any[] }
         </thead>
         <tbody>
         <tr>
-          <td className="border-t py-1 px-2 text-center">{potentialRanks[0].description}</td>
-          <td className="border-t py-1 px-2 text-center">{potentialRanks[1].description}</td>
-          <td className="border-t py-1 px-2 text-center">{potentialRanks[2].description}</td>
-          <td className="border-t py-1 px-2 text-center">{potentialRanks[3].description}</td>
-          <td className="border-t py-1 px-2 text-center">{potentialRanks[4].description}</td>
+          <td className="border-t py-1 px-2 text-center">{potentialRanks[0]?.description}</td>
+          <td className="border-t py-1 px-2 text-center">{potentialRanks[1]?.description}</td>
+          <td className="border-t py-1 px-2 text-center">{potentialRanks[2]?.description}</td>
+          <td className="border-t py-1 px-2 text-center">{potentialRanks[3]?.description}</td>
+          <td className="border-t py-1 px-2 text-center">{potentialRanks[4]?.description}</td>
         </tr>
         </tbody>
       </table>

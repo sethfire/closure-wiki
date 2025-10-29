@@ -2,7 +2,7 @@ export const SUPPORTED_LANGS = ["en", "cn", "jp", "kr"];
 export const SUPPORTED_TYPES = ["operators", "enemies"];
 
 const API_URL = "https://api.closure.wiki";
-const API_VERSION = "v1";
+const API_VERSION = "v2";
 
 export async function fetchEntries(lang: string, type: string) {
   try {

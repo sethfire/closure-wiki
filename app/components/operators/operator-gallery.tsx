@@ -2,10 +2,10 @@ import { getCharacter, getCharAvatar } from "~/lib/image-utils";
 import CarouselGallery from "~/components/carousel-gallery";
 
 export default function OperatorGallery({ charSkins }: { charSkins: any }) {
-  if (!charSkins || !Array.isArray(charSkins) || charSkins.length === 0) return null;
+  if (!charSkins) return null;
 
   const charArts: any[] = [];
-  charSkins.forEach((skin: any) => {
+  Object.values(charSkins).forEach((skin: any) => {
     let skinId = skin.skinId.toLowerCase();
     let avatar = "";
     if (!skin.isBuySkin) {
@@ -14,7 +14,6 @@ export default function OperatorGallery({ charSkins }: { charSkins: any }) {
     } else {
       skinId = skinId.replace('@', '_').replace('#', '%23');
       avatar = getCharAvatar(skinId);
-      
     }
 
     let title = skin.displaySkin.skinName ?? skin.displaySkin.skinGroupName;
@@ -26,12 +25,15 @@ export default function OperatorGallery({ charSkins }: { charSkins: any }) {
       title = `Elite 2`;
     }
 
+    const illustrators = skin.displaySkin?.drawerList?.length
+      ? skin.displaySkin.drawerList.join(", ")
+      : "N/A";
+
     charArts.push({
-      // src: `https://static.closure.wiki/v1/characters/${skinId}.webp`,
       src: getCharacter(skinId),
       thumb: avatar.toLowerCase(),
       title: title,
-      desc: `Illustrator: ${skin.displaySkin.drawerList.join(", ")}`,
+      desc: `Illustrator: ${illustrators}`,
       display: (skin.displaySkin.skinGroupId === "ILLUST_0") ? "object-contain" : "object-cover",
     });
   });

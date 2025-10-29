@@ -1,4 +1,7 @@
 export default function StatsTable({ phases, favorKeyFrames }: { phases: any[], favorKeyFrames: any[] }) {
+  if (!phases || phases.length === 0) return null;
+  if (!favorKeyFrames || favorKeyFrames.length === 0) return null;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto">

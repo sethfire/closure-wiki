@@ -1,4 +1,6 @@
 export default function OverviewTable({ character }: { character: any }) {
+  if (!character) return null;
+
   return (
     <div className="overflow-x-auto mb-4">
       <table className="w-full border-collapse bg-muted text-sm">

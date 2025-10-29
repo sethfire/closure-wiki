@@ -14,6 +14,7 @@ import TalentsTable from "~/components/operators/talent-table";
 import { getCharClass, getCharRarity } from "~/lib/char-utils";
 import { fetchEntry, SUPPORTED_LANGS } from "~/lib/fetch-utils";
 import { getCharAvatar } from "~/lib/image-utils";
+import Notice from "~/components/notice";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { lang, slug } = params;
@@ -29,9 +30,9 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export const meta = ({ data }: any) => {
   const { lang, data: char } = data;
 
-  const title = char.meta.name;
-  const description = char.char.itemUsage;
-  const image = getCharAvatar(char.charProfile.charID);
+  const title = char.summary.name;
+  const description = char.summary.desc;
+  const image = char.summary.image;
 
   return [
     { title: title },
@@ -53,84 +54,112 @@ export default function Page() {
   const { lang, data }: any = useLoaderData<typeof loader>();
 
   return (
-    <main className="w-full max-w-5xl mx-auto">
-      <div className="flex flex-col gap-4 p-4">
-        <div>
-          <Breadcrumb className="mb-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild><Link to={`/${lang}`} discover="none">Home</Link></BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>/</BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild><Link to={`/${lang}/operators`} discover="none">Operators</Link></BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>/</BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbPage>{data.meta.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <EntryTitle
-            title={data.meta.name}
-            caption={`${getCharRarity(data.char.rarity)}★ ${getCharClass(data.char.profession)} Operator`}
-            icon={getCharAvatar(`${data.meta.id}`)}
-          />
-          <Separator />
+    <main className="w-full">
+      <div className="flex justify-center gap-6 p-4">
+        <aside className="w-64 shrink-0 hidden lg:block">
+          <div className="sticky top-4">
+            <h3 className="font-semibold mb-3">Navigation</h3>
+            <nav className="space-y-1">
+              <a href="/en" className="block px-3 py-2 text-sm rounded hover:bg-accent">Home</a>
+              <a href="/en/operators" className="block px-3 py-2 text-sm rounded hover:bg-accent">Operators</a>
+              <a href="/en/enemies" className="block px-3 py-2 text-sm rounded hover:bg-accent">Enemies</a>
+            </nav>
+          </div>
+        </aside>
+
+        <div className="w-full max-w-5xl flex flex-col gap-4">
+          <div>
+            <Breadcrumb className="mb-4">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild><Link to={`/${lang}`} discover="none">Home</Link></BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>/</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild><Link to={`/${lang}/operators`} discover="none">Operators</Link></BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>/</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{data.summary.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+            <EntryTitle
+              title={data.summary.name}
+              caption={`${getCharRarity(data.character.rarity)}★ ${getCharClass(data.character.profession)} Operator`}
+              icon={getCharAvatar(`${data.summary.id}`)}
+            />
+            <Separator />
+          </div>
+          {data.summary.isUnreleased && <Notice title="Note" message="This operator has not yet been released on the Global server of Arknights." />}
+
+          <section id="gallery">
+            <OperatorGallery charSkins={data.charSkins} />
+          </section>
+
+          <section id="overview">
+            <h2 className="text-xl font-semibold mb-2">Overview</h2>
+            <Separator className="mb-4" />
+            <OverviewTable character={data.character} />
+            <CVTable charSkins={data.charSkins} voiceLangDict={data.voiceLangDict} />
+          </section>
+          
+          <section id="attributes">
+            <h2 className="text-xl font-semibold mb-2">Attributes</h2>
+            <Separator className="mb-4" />
+            <StatsTable phases={data.character.phases} favorKeyFrames={data.character.favorKeyFrames} />
+          </section>
+
+          <section id="talents">
+            <h2 className="text-xl font-semibold mb-2">Talents</h2>
+            <Separator className="mb-4" />
+            <TalentsTable talents={data.character.talents} />
+          </section>
+
+          <section id="potentials">
+            <h2 className="text-xl font-semibold mb-2">Potentials</h2>
+            <Separator className="mb-4" />
+            <PotentialsTable potentialRanks={data.character.potentialRanks} />
+          </section>
+
+          <section id="skills">
+            <h2 className="text-xl font-semibold mb-2">Skills</h2>
+            <Separator className="mb-4" />
+            <SkillsTable skills={data.character.skills} charSkills={data.charSkills} allSkillLvlup={data.character.allSkillLvlup} />
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-2">Base Skills</h2>
+            <Separator className="mb-4" />
+            <div className="text-muted-foreground italic">TBD</div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-2">Modules</h2>
+            <Separator className="mb-4" />
+            <div className="text-muted-foreground italic">TBD</div>
+          </section>
+
+          <section id="files">
+            <h2 className="text-xl font-semibold mb-2">Operator File</h2>
+            <Separator className="mb-4" />
+            <OperatorFile handbookInfo={data.handbookInfo} />
+          </section>
         </div>
 
-        <section id="gallery">
-          <OperatorGallery charSkins={data.charSkins} />
-        </section>
-
-        <section id="overview">
-          <h2 className="text-xl font-semibold mb-2">Overview</h2>
-          <Separator className="mb-4" />
-          <OverviewTable character={data.char} />
-          <CVTable charSkins={data.charSkins} voiceLangDict={data.voiceLangDict} />
-        </section>
-        
-        <section id="attributes">
-          <h2 className="text-xl font-semibold mb-2">Attributes</h2>
-          <Separator className="mb-4" />
-          <StatsTable phases={data.char.phases} favorKeyFrames={data.char.favorKeyFrames} />
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Talents</h2>
-          <Separator className="mb-4" />
-          <TalentsTable talents={data.char.talents} />
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Potentials</h2>
-          <Separator className="mb-4" />
-          <PotentialsTable potentialRanks={data.char.potentialRanks} />
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Skills</h2>
-          <Separator className="mb-4" />
-          <SkillsTable skills={data.char.skills} charSkills={data.charSkills} allSkillLvlup={data.char.allSkillLvlup} />
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Base Skills</h2>
-          <Separator className="mb-4" />
-          <div className="text-muted-foreground italic">TBD</div>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Modules</h2>
-          <Separator className="mb-4" />
-          <div className="text-muted-foreground italic">TBD</div>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Operator File</h2>
-          <Separator className="mb-4" />
-          <OperatorFile storyTextAudio={data.charProfile.storyTextAudio} />
-        </section>
+        <aside className="w-64 shrink-0 hidden lg:block">
+          <div className="sticky top-4">
+            <h3 className="font-semibold mb-3">Table of Contents</h3>
+            <nav className="space-y-1">
+              <a href="#overview" className="block px-3 py-2 text-sm rounded hover:bg-accent">Overview</a>
+              <a href="#attributes" className="block px-3 py-2 text-sm rounded hover:bg-accent">Attributes</a>
+              <a href="#talents" className="block px-3 py-2 text-sm rounded hover:bg-accent">Talents</a>
+              <a href="#potentials" className="block px-3 py-2 text-sm rounded hover:bg-accent">Potentials</a>
+              <a href="#skills" className="block px-3 py-2 text-sm rounded hover:bg-accent">Skills</a>
+              <a href="#files" className="block px-3 py-2 text-sm rounded hover:bg-accent">Files</a>
+            </nav>
+          </div>
+        </aside>
       </div>
     </main>
   );
