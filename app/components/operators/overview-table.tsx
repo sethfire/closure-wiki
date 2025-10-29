@@ -1,3 +1,6 @@
+import { getCharBranch, getCharClass, getFaction } from "~/lib/char-utils";
+import { parseRichText } from "~/lib/parse";
+
 export default function OverviewTable({ character }: { character: any }) {
   if (!character) return null;
 
@@ -27,7 +30,7 @@ export default function OverviewTable({ character }: { character: any }) {
           <tr>
             <th className="bg-gray-200 dark:bg-card p-1 text-center">Trait</th>
             <td className="border-t px-2 py-1 text-center" colSpan={3}>
-              {character.description}
+              <span dangerouslySetInnerHTML={{ __html: parseRichText(character.description)}} />
             </td>
           </tr>
           <tr>
@@ -41,21 +44,21 @@ export default function OverviewTable({ character }: { character: any }) {
           <tr>
             <th className="bg-gray-200 dark:bg-card p-1 text-center">Class</th>
             <td className="border-t px-2 py-1 text-center">
-              {character.profession}
+              {getCharClass(character.profession)}
             </td>
             <th className="bg-gray-200 dark:bg-card p-1 text-center">Subbranch</th>
             <td className="border-t px-2 py-1 text-center">
-              {character.subProfessionId}
+              {getCharBranch(character.subProfessionId)}
             </td>
           </tr>
           <tr>
             <th className="bg-gray-200 dark:bg-card p-1 text-center">Nation</th>
             <td className="border-t px-2 py-1 text-center">
-              {character.nationId}
+              {getFaction(character.nationId)}
             </td>
             <th className="bg-gray-200 dark:bg-card p-1 text-center">Faction</th>
             <td className="border-t px-2 py-1 text-center">
-              {character.groupId}
+              {getFaction(character.groupId)}
             </td>
           </tr>
         </tbody>

@@ -19,7 +19,7 @@ export function getCharRarityColor(value: string): string {
     case "TIER_4": return "#D6C5D6";
     case "TIER_5": return "#FFFFA9";
     case "TIER_6": return "#FFC800";
-    default: return "";
+    default: return "#FFFFFF";
   }
 }
 
@@ -86,7 +86,7 @@ export function getCharClass(value: string): string {
     case "SPECIAL": return "Specialist";
     case "TRAP": return "Trap";
     case "TOKEN": return "Token";
-    default: return "???";
+    default: return value;
   }
 }
 
@@ -158,6 +158,6 @@ export function getCharBranch(value: string): string {
     case "primprotector": return "Primal Protector";
     case "skywalker": return "Skyranger";
     case "soulcaster": return "Shaper Caster";
-    default: return "???";
+    default: return value;
   }
 }

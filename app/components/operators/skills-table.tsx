@@ -4,7 +4,7 @@ import { parseBlackBoard, parseRichText } from "~/lib/parse";
 
 export default function SkillsTable({ skills, charSkills, allSkillLvlup, items }: { skills: any[], charSkills: any[], allSkillLvlup: any[], items?: any[] }) {
   if (!Array.isArray(skills) || skills.length === 0) return null;
-  if (!Array.isArray(charSkills) || charSkills.length === 0) return null;
+  if (!charSkills) return null;
   if (!Array.isArray(allSkillLvlup)) return null;
   // if (!Array.isArray(items)) return null;
 
@@ -12,7 +12,7 @@ export default function SkillsTable({ skills, charSkills, allSkillLvlup, items }
     return (
       <div className="flex flex-col gap-4">
         {skills.map((skill: any) => {
-          const charSkill = charSkills.find((cs: any) => cs.skillId === skill.skillId);
+          const charSkill = charSkills[skill.skillId];
           if (!charSkill) return null;
 
           return (

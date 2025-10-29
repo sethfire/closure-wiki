@@ -56,7 +56,7 @@ export default function Page() {
   return (
     <main className="w-full">
       <div className="flex justify-center gap-6 p-4">
-        <aside className="w-64 shrink-0 hidden lg:block">
+        {/* <aside className="w-64 shrink-0 hidden lg:block">
           <div className="sticky top-4">
             <h3 className="font-semibold mb-3">Navigation</h3>
             <nav className="space-y-1">
@@ -65,7 +65,7 @@ export default function Page() {
               <a href="/en/enemies" className="block px-3 py-2 text-sm rounded hover:bg-accent">Enemies</a>
             </nav>
           </div>
-        </aside>
+        </aside> */}
 
         <div className="w-full max-w-5xl flex flex-col gap-4">
           <div>
@@ -147,7 +147,7 @@ export default function Page() {
           </section>
         </div>
 
-        <aside className="w-64 shrink-0 hidden lg:block">
+        {/* <aside className="w-64 shrink-0 hidden lg:block">
           <div className="sticky top-4">
             <h3 className="font-semibold mb-3">Table of Contents</h3>
             <nav className="space-y-1">
@@ -159,7 +159,7 @@ export default function Page() {
               <a href="#files" className="block px-3 py-2 text-sm rounded hover:bg-accent">Files</a>
             </nav>
           </div>
-        </aside>
+        </aside> */}
       </div>
     </main>
   );
