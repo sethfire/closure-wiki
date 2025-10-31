@@ -90,9 +90,7 @@ export default function Page() {
                 {data.enemyHandbook.abilityList.map((ability: any, index: number) =>
                   ability.textFormat === "TITLE" 
                   ? (<li key={index} className="font-bold text-lg mt-4 mb-1 list-none">{ability.text}</li>) 
-                  : (
-                      <li key={index} dangerouslySetInnerHTML={{ __html: parseRichText(ability.text) }} />
-                    )
+                  : (<li key={index} dangerouslySetInnerHTML={{ __html: parseRichText(ability.text) }} />)
                 )}
             </ul>
           </section>
