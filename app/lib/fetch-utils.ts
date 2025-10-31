@@ -1,5 +1,5 @@
 export const SUPPORTED_LANGS = ["en", "cn", "jp", "kr"];
-export const SUPPORTED_TYPES = ["operators", "enemies"];
+export const SUPPORTED_TYPES = ["operators", "enemies", "operations", "outfits"];
 
 const API_URL = "https://api.closure.wiki";
 const API_VERSION = "v2";
@@ -25,7 +25,7 @@ export async function fetchEntry(lang: string, type: string, slug: string) {
     if (!SUPPORTED_LANGS.includes(lang)) return null;
     if (!SUPPORTED_TYPES.includes(type)) return null;
 
-    const response = await fetch(`${API_URL}/${API_VERSION}/${lang}/${type}/${slug}`);
+    const response = await fetch(`${API_URL}/${API_VERSION}/${lang}/${type}/${encodeURIComponent(slug)}`);
     if (!response.ok) return null;
 
     const data = await response.json();
